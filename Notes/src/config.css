@@ -1,0 +1,10 @@
+.root {
+	-fx-background-color: linear-gradient(to left bottom, forestgreen, olivedrab);
+	-fx-background-insets: 7.0;
+	-fx-effect: dropshadow(three-pass-box, black, 10.0, 0.0, 0.0, 0.0);
+}
+
+.deleteButtons {
+	-fx-background-color: transparent;
+	-fx-graphic: url('../res/delete.png');
+}
