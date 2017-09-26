@@ -1,7 +1,5 @@
-import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 public class DeleteButton extends Button{
@@ -29,39 +27,26 @@ public class DeleteButton extends Button{
 		
 		final Delta dragDelta = new Delta();
 		
-		setOnMousePressed(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent mouseEvent) {
-				// record a delta distance for the drag and drop operation.
-				dragDelta.x = primaryStage.getX() - mouseEvent.getScreenX();
-				dragDelta.y = primaryStage.getY() - mouseEvent.getScreenY();
-				
-				if(mouseEvent.isSecondaryButtonDown()) rightclick = true;
+		setOnMousePressed(e -> {
+			// record a delta distance for the drag and drop operation.
+			dragDelta.x = primaryStage.getX() - e.getScreenX();
+			dragDelta.y = primaryStage.getY() - e.getScreenY();
+			
+			if(e.isSecondaryButtonDown()) rightclick = true;
+		});
+		setOnMouseDragged(e -> {
+			primaryStage.setX(e.getScreenX() + dragDelta.x);
+			primaryStage.setY(e.getScreenY() + dragDelta.y);
+			dragged = true;
+		});
+		setOnMouseEntered(e -> {
+			if (!e.isPrimaryButtonDown()) {
+				primaryStage.getScene().setCursor(Cursor.HAND);
 			}
 		});
-		
-		setOnMouseDragged(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent mouseEvent) {
-				primaryStage.setX(mouseEvent.getScreenX() + dragDelta.x);
-				primaryStage.setY(mouseEvent.getScreenY() + dragDelta.y);
-				dragged = true;
-			}
-		});
-		setOnMouseEntered(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent mouseEvent) {
-				if (!mouseEvent.isPrimaryButtonDown()) {
-					primaryStage.getScene().setCursor(Cursor.HAND);
-				}
-			}
-		});
-		setOnMouseExited(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent mouseEvent) {
-				if (!mouseEvent.isPrimaryButtonDown()) {
-					primaryStage.getScene().setCursor(Cursor.DEFAULT);
-				}
+		setOnMouseExited(e -> {
+			if (!e.isPrimaryButtonDown()) {
+				primaryStage.getScene().setCursor(Cursor.DEFAULT);
 			}
 		});
 	}
