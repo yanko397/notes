@@ -10,6 +10,7 @@ public class DeleteButton extends Button{
 	private Stage primaryStage = null;
 	
 	private boolean dragged = false;
+	private boolean rightclick = false;
 	
 	public void init(Main main) {
 		
@@ -20,8 +21,9 @@ public class DeleteButton extends Button{
 	public void setHandlers() {
 		
 		setOnMouseReleased(e -> {
-			if(!dragged) main.deleteStuff(getId());
+			if(!dragged && !rightclick) main.deleteStuff(getId());
 			dragged = false;
+			rightclick = false;
 		});
 		
 		
@@ -33,6 +35,8 @@ public class DeleteButton extends Button{
 				// record a delta distance for the drag and drop operation.
 				dragDelta.x = primaryStage.getX() - mouseEvent.getScreenX();
 				dragDelta.y = primaryStage.getY() - mouseEvent.getScreenY();
+				
+				if(mouseEvent.isSecondaryButtonDown()) rightclick = true;
 			}
 		});
 		

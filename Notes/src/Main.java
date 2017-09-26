@@ -1,5 +1,3 @@
-import static com.sun.jna.platform.win32.WinUser.GWL_STYLE;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -10,10 +8,6 @@ import java.lang.management.ManagementFactory;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-
-import com.sun.jna.Pointer;
-import com.sun.jna.platform.win32.User32;
-import com.sun.jna.platform.win32.WinDef.HWND;
 
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -111,7 +105,7 @@ public class Main extends Application{
 
 		primaryStage.show();
 		
-		behinderterHaesslicherKack();
+		UglyShit.behinderterHaesslicherKack();
 	}
 	
 	public void addStuff() {
@@ -200,6 +194,7 @@ public class Main extends Application{
 	}
 	
 	public void showOptions() {
+		
 		Stage options = new Stage();
 		VBox optionBox = new VBox();
 		Scene optionScene = new Scene(optionBox, Color.GRAY);
@@ -360,16 +355,5 @@ public class Main extends Application{
 	
 	public ArrayList<Text> getTexts(){
 		return texts;
-	}
-	
-	@SuppressWarnings("restriction")
-	public void behinderterHaesslicherKack() {
-		long lhwnd = com.sun.glass.ui.Window.getWindows().get(0).getNativeWindow();
-		Pointer lpVoid = new Pointer(lhwnd);
-		HWND hwnd = new HWND(lpVoid);
-		final User32 user32 = User32.INSTANCE;
-		int oldStyle = user32.GetWindowLong(hwnd, GWL_STYLE);
-		int newStyle = oldStyle | 0x00020000;// WS_MINIMIZEBOX
-		user32.SetWindowLong(hwnd, GWL_STYLE, newStyle);
 	}
 }
