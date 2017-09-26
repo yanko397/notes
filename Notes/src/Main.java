@@ -1,12 +1,6 @@
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import javafx.application.Application;
@@ -16,7 +10,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextArea;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
@@ -75,7 +68,7 @@ public class Main extends Application{
 		primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("note.png")));
 		primaryStage.setScene(scene);
 		
-		restore();
+		Data.restore(this);
 		
 		
 		ContextMenu contextMenu = new ContextMenu();
@@ -99,7 +92,7 @@ public class Main extends Application{
 		primaryStage.focusedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) {
-				save();
+				Data.save(primaryStage, texts);
 			}
 		});
 
@@ -125,7 +118,7 @@ public class Main extends Application{
 		count++;
 	}
 	
-	public void addDeleteButton() {
+	private void addDeleteButton() {
 
 		DeleteButton deleteButton = new DeleteButton();
 		deleteButton.init(this);
@@ -140,7 +133,7 @@ public class Main extends Application{
 		face.getChildren().add(deleteButton);
 	}
 	
-	public void addText(String revived) {
+	private void addText(String revived) {
 		
 		Text text = new Text();
 		text.init(this);
@@ -246,83 +239,14 @@ public class Main extends Application{
 		deleteButtons.get(deleteButtons.size()-1).setVisible(false);
 	}
 	
-	public void save() {
-		
-		PrintWriter pWriter = null;
-		try {
-			Files.deleteIfExists(Paths.get("save.notes"));
-			pWriter = new PrintWriter(new FileWriter("save.notes", true), true);
-
-			pWriter.println("// Autor: Yanko");
-			pWriter.println("// Mail: yanko397@web.de");
-			pWriter.println();
-			pWriter.println("// Comments starting with double slashes and empty lines will be ignored by the program.");
-//			pWriter.println("// Beginnt eine Zeile mit Doppelslash oder ist sie leer, wird sie vom Programm ignoriert.");
-//			pWriter.println();
-			pWriter.println("// The first not empty line, if starting with two integers, will define the position of the program on the screen");
-//			pWriter.println("// Die erste, nicht leere Zeile die mit zwei Zahlen beginnt, gibt die Position des Programms auf dem Bildschirm an");
-			pWriter.println();
-			pWriter.println((int)primaryStage.getX() + " " + (int)primaryStage.getY());
-			pWriter.println();
-			
-			for(TextArea text : texts)
-				pWriter.println(text.getText());
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		if (pWriter != null) pWriter.close();
-	}
-	
-	public void restore() throws IOException {
-		
-		if(Files.exists(Paths.get("save.notes"))) {
-			BufferedReader br = new BufferedReader(new FileReader("save.notes"));
-
-			String ifFails = "";
-			try {
-				while(ifFails.isEmpty()) {
-					String temp = br.readLine();
-					if(temp == null) break;
-					if(!temp.startsWith("//")) {
-						ifFails += temp.trim();
-					}
-				}
-				String[] pos = ifFails.split(" ");
-				
-				primaryStage.setX(Integer.parseInt(pos[0]));
-				primaryStage.setY(Integer.parseInt(pos[1]));
-			} catch (Exception e){
-				primaryStage.centerOnScreen();
-				addStuff(ifFails);
-			}
-			
-			String line = br.readLine();
-			while(line != null) {
-				if(!line.trim().isEmpty() && !line.startsWith("//")) {
-					addStuff(line);
-				}
-				line = br.readLine();
-			}
-			if(texts.isEmpty()) addStuff();
-
-			br.close();
-		} else {
-			addStuff();
-		}
-		
-		checkLast();
-	}
-	
 	public void exitApplication() {
-		save();
+		Data.save(primaryStage, texts);
 		System.exit(0);
 	}
 	
 	public void restartApplication() {
 		
-		save();
+		Data.save(primaryStage, texts);
 		
 		try {
 			StringBuilder cmd = new StringBuilder();
