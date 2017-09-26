@@ -15,14 +15,19 @@ public class Face extends Pane {
 
 		final Delta dragDelta = new Delta();
 		
-		setOnMousePressed(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent mouseEvent) {
-				// record a delta distance for the drag and drop operation.
-				dragDelta.x = primaryStage.getX() - mouseEvent.getScreenX();
-				dragDelta.y = primaryStage.getY() - mouseEvent.getScreenY();
-			}
+		setOnMousePressed(e -> {
+			// record a delta distance for the drag and drop operation.
+			dragDelta.x = primaryStage.getX() - e.getScreenX();
+			dragDelta.y = primaryStage.getY() - e.getScreenY();
 		});
+//		setOnMousePressed(new EventHandler<MouseEvent>() {
+//			@Override
+//			public void handle(MouseEvent mouseEvent) {
+//				// record a delta distance for the drag and drop operation.
+//				dragDelta.x = primaryStage.getX() - mouseEvent.getScreenX();
+//				dragDelta.y = primaryStage.getY() - mouseEvent.getScreenY();
+//			}
+//		});
 		setOnMouseDragged(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent mouseEvent) {

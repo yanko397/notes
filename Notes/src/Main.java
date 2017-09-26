@@ -1,6 +1,3 @@
-import java.io.File;
-import java.io.IOException;
-import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 
 import javafx.application.Application;
@@ -10,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
@@ -53,7 +51,7 @@ public class Main extends Application{
 	public void start(Stage primaryStage) throws Exception {
 
 		this.primaryStage = primaryStage;
-		
+
 		face = new Face();
 		face.init(this);
 		face.setPrefWidth(width);
@@ -68,26 +66,11 @@ public class Main extends Application{
 		primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("note.png")));
 		primaryStage.setScene(scene);
 		
+		addContextMenu();
+		
 		Data.restore(this);
 		
 		
-		ContextMenu contextMenu = new ContextMenu();
-		face.setOnContextMenuRequested(e -> contextMenu.show(primaryStage, e.getScreenX(), e.getScreenY()));
-		
-		MenuItem item1 = new MenuItem("Einstellungen");
-		item1.setOnAction(e -> showOptions());
-		MenuItem item2 = new MenuItem("Alle löschen");
-		item2.setOnAction(e -> {while(deleteButtons.size() > 1) deleteStuff(deleteButtons.get(0).getId());});
-		MenuItem item3 = new MenuItem("Minimieren");
-		item3.setOnAction(e -> primaryStage.setIconified(true));
-		MenuItem item4 = new MenuItem("Neu starten");
-		item4.setOnAction(e -> restartApplication());
-		MenuItem item5 = new MenuItem("Beenden");
-		item5.setOnAction(e -> exitApplication());
-		
-		contextMenu.getItems().addAll(item1, item2, item3, item5);
-		
-
 		// save the notes, if the stage gains or looses focus
 		primaryStage.focusedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
@@ -98,6 +81,7 @@ public class Main extends Application{
 
 		primaryStage.show();
 		
+		// so you can minimize by clicking on taskbar icon
 		UglyShit.behinderterHaesslicherKack();
 	}
 	
@@ -186,14 +170,38 @@ public class Main extends Application{
 		totalOffset -= absoluteOffset;
 	}
 	
+	private void addContextMenu() {
+		
+		ContextMenu contextMenu = new ContextMenu();
+		face.setOnContextMenuRequested(e -> contextMenu.show(primaryStage, e.getScreenX(), e.getScreenY()));
+		
+		MenuItem options = new MenuItem("Einstellungen");
+		options.setOnAction(e -> showOptions());
+		MenuItem deleteAll = new MenuItem("Alle löschen");
+		deleteAll.setOnAction(e -> {while(deleteButtons.size() > 1) deleteStuff(deleteButtons.get(0).getId());});
+		MenuItem minimize = new MenuItem("Minimieren");
+		minimize.setOnAction(e -> primaryStage.setIconified(true));
+		MenuItem restart = new MenuItem("Neu starten");
+		restart.setOnAction(e -> {
+			Data.save(primaryStage, texts);
+			UglyShit.restartApplication(startArgs);
+		});
+		MenuItem exit = new MenuItem("Beenden");
+		exit.setOnAction(e -> exitApplication());
+		
+		contextMenu.getItems().addAll(options, deleteAll, minimize, exit);
+	}
+	
 	public void showOptions() {
 		
-		Stage options = new Stage();
 		VBox optionBox = new VBox();
-		Scene optionScene = new Scene(optionBox, Color.GRAY);
-		
 		optionBox.prefWidth(100);
 		optionBox.prefHeight(100);
+		optionBox.getChildren().add(new TextField("fuck you xD"));
+		
+		Scene optionScene = new Scene(optionBox, Color.GRAY);
+
+		Stage options = new Stage();
 		options.setScene(optionScene);
 		options.initStyle(StageStyle.DECORATED);
 		
@@ -242,31 +250,6 @@ public class Main extends Application{
 	public void exitApplication() {
 		Data.save(primaryStage, texts);
 		System.exit(0);
-	}
-	
-	public void restartApplication() {
-		
-		Data.save(primaryStage, texts);
-		
-		try {
-			StringBuilder cmd = new StringBuilder();
-			cmd.append(System.getProperty("java.home") + File.separator + "bin" + File.separator + "java ");
-			
-			for (String jvmArg : ManagementFactory.getRuntimeMXBean().getInputArguments())
-				cmd.append(jvmArg + " ");
-			
-			cmd.append("-cp ").append(ManagementFactory.getRuntimeMXBean().getClassPath()).append(" ");
-			cmd.append(Main.class.getName()).append(" ");
-			
-			for (String arg : startArgs)
-				cmd.append(arg).append(" ");
-
-			Runtime.getRuntime().exec(cmd.toString());
-			System.exit(0);
-		} catch (IOException e) {
-			addStuff("FEHLER - Neustart nicht möglich");
-			checkLast();
-		}
 	}
 	
 	public String getResource(String path) {
