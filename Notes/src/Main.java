@@ -1,3 +1,5 @@
+import static com.sun.jna.platform.win32.WinUser.GWL_STYLE;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -7,8 +9,11 @@ import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.Timestamp;
 import java.util.ArrayList;
+
+import com.sun.jna.Pointer;
+import com.sun.jna.platform.win32.User32;
+import com.sun.jna.platform.win32.WinDef.HWND;
 
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -20,6 +25,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -82,15 +88,17 @@ public class Main extends Application{
 		face.setOnContextMenuRequested(e -> contextMenu.show(primaryStage, e.getScreenX(), e.getScreenY()));
 		
 		MenuItem item1 = new MenuItem("Einstellungen");
-		item1.setOnAction(e -> System.out.println("ping"));
+		item1.setOnAction(e -> showOptions());
 		MenuItem item2 = new MenuItem("Alle löschen");
 		item2.setOnAction(e -> {while(deleteButtons.size() > 1) deleteStuff(deleteButtons.get(0).getId());});
-		MenuItem item3 = new MenuItem("Neu starten");
-		item3.setOnAction(e -> restartApplication());
-		MenuItem item4 = new MenuItem("Beenden");
-		item4.setOnAction(e -> exitApplication());
+		MenuItem item3 = new MenuItem("Minimieren");
+		item3.setOnAction(e -> primaryStage.setIconified(true));
+		MenuItem item4 = new MenuItem("Neu starten");
+		item4.setOnAction(e -> restartApplication());
+		MenuItem item5 = new MenuItem("Beenden");
+		item5.setOnAction(e -> exitApplication());
 		
-		contextMenu.getItems().addAll(item2, item4);
+		contextMenu.getItems().addAll(item1, item2, item3, item5);
 		
 
 		// save the notes, if the stage gains or looses focus
@@ -100,8 +108,10 @@ public class Main extends Application{
 				save();
 			}
 		});
-		
+
 		primaryStage.show();
+		
+		behinderterHaesslicherKack();
 	}
 	
 	public void addStuff() {
@@ -189,6 +199,20 @@ public class Main extends Application{
 		totalOffset -= absoluteOffset;
 	}
 	
+	public void showOptions() {
+		Stage options = new Stage();
+		VBox optionBox = new VBox();
+		Scene optionScene = new Scene(optionBox, Color.GRAY);
+		
+		optionBox.prefWidth(100);
+		optionBox.prefHeight(100);
+		options.setScene(optionScene);
+		options.initStyle(StageStyle.DECORATED);
+		
+		options.sizeToScene();
+		options.show();
+	}
+	
 	public void moveStuff(int index, Direction dir) {
 		
 		String swap = "";
@@ -231,17 +255,17 @@ public class Main extends Application{
 		
 		PrintWriter pWriter = null;
 		try {
-			Files.deleteIfExists(Paths.get("saved.txt"));
-			pWriter = new PrintWriter(new FileWriter("saved.txt", true), true);
+			Files.deleteIfExists(Paths.get("save.notes"));
+			pWriter = new PrintWriter(new FileWriter("save.notes", true), true);
 
 			pWriter.println("// Autor: Yanko");
 			pWriter.println("// Mail: yanko397@web.de");
 			pWriter.println();
 			pWriter.println("// Comments starting with double slashes and empty lines will be ignored by the program.");
-			pWriter.println("// Beginnt eine Zeile mit Doppelslash oder ist sie leer, wird sie vom Programm ignoriert.");
-			pWriter.println();
+//			pWriter.println("// Beginnt eine Zeile mit Doppelslash oder ist sie leer, wird sie vom Programm ignoriert.");
+//			pWriter.println();
 			pWriter.println("// The first not empty line, if starting with two integers, will define the position of the program on the screen");
-			pWriter.println("// Die erste, nicht leere Zeile die mit zwei Zahlen beginnt, gibt die Position des Programms auf dem Bildschirm an");
+//			pWriter.println("// Die erste, nicht leere Zeile die mit zwei Zahlen beginnt, gibt die Position des Programms auf dem Bildschirm an");
 			pWriter.println();
 			pWriter.println((int)primaryStage.getX() + " " + (int)primaryStage.getY());
 			pWriter.println();
@@ -258,8 +282,8 @@ public class Main extends Application{
 	
 	public void restore() throws IOException {
 		
-		if(Files.exists(Paths.get("saved.txt"))) {
-			BufferedReader br = new BufferedReader(new FileReader("saved.txt"));
+		if(Files.exists(Paths.get("save.notes"))) {
+			BufferedReader br = new BufferedReader(new FileReader("save.notes"));
 
 			String ifFails = "";
 			try {
@@ -336,5 +360,16 @@ public class Main extends Application{
 	
 	public ArrayList<Text> getTexts(){
 		return texts;
+	}
+	
+	@SuppressWarnings("restriction")
+	public void behinderterHaesslicherKack() {
+		long lhwnd = com.sun.glass.ui.Window.getWindows().get(0).getNativeWindow();
+		Pointer lpVoid = new Pointer(lhwnd);
+		HWND hwnd = new HWND(lpVoid);
+		final User32 user32 = User32.INSTANCE;
+		int oldStyle = user32.GetWindowLong(hwnd, GWL_STYLE);
+		int newStyle = oldStyle | 0x00020000;// WS_MINIMIZEBOX
+		user32.SetWindowLong(hwnd, GWL_STYLE, newStyle);
 	}
 }
