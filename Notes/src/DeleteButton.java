@@ -50,8 +50,4 @@ public class DeleteButton extends Button{
 			}
 		});
 	}
-	
-	private class Delta {
-		double x, y;
-	}
 }

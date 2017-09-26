@@ -23,8 +23,4 @@ public class Face extends Pane {
 			primaryStage.setY(e.getScreenY() + dragDelta.y);
 		});
 	}
-	
-	private class Delta {
-		double x, y;
-	}
 }
