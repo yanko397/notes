@@ -210,7 +210,6 @@ public class Main extends Application{
 	}
 	
 	public void moveStuff(int index, Direction dir) {
-		
 		String swap = "";
 		if(dir.equals(Direction.DOWN)) {
 			if(index != texts.size()-1) {
@@ -233,14 +232,12 @@ public class Main extends Application{
 	}
 	
 	public void checkLast() {
-		
 		if(!texts.get(texts.size()-1).getText().trim().isEmpty()) {
 			addStuff();
 		}
 	}
 	
 	public void hideLast() {
-		
 		for(Button button : deleteButtons) {
 			button.setVisible(true);
 		}
