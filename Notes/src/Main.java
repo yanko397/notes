@@ -235,7 +235,7 @@ public class Main extends Application{
 		infoTitle.setFont(new Font(20));
 		
 		Button okButton = new Button("OK");
-		okButton.setOnAction(e -> info.close());
+		okButton.setOnAction(e -> info.close()); 
 		
 		info.add(infoTitle);
 		info.add(new Label("Strg + D:\n"
