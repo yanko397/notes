@@ -9,7 +9,6 @@ public class Text extends TextArea {
 	private ArrayList<Text> texts = null;
 
 	public void init(Main main) {
-		
 		this.main = main;
 		texts = main.getTexts();
 	}
@@ -66,6 +65,12 @@ public class Text extends TextArea {
 					}
 					main.deleteStuff(getId());
 				}
+			}
+			
+			if(e.isControlDown() && e.getCode() == KeyCode.Z && !main.getStack().isEmpty()) {
+				e.consume();
+				texts.get(texts.size()-1).setText(main.getStack().pop());
+				main.checkLast();
 			}
 			
 			if(e.getCode() == KeyCode.UP) {

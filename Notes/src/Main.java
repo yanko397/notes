@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
 
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -6,11 +8,10 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -37,6 +38,7 @@ public class Main extends Application{
 	private Scene scene;
 	private Face face;
 	
+	private Deque<String> stack = new LinkedList<String>();
 	private ArrayList<Text> texts = new ArrayList<Text>();
 	private ArrayList<Button> deleteButtons = new ArrayList<Button>();
 
@@ -51,7 +53,7 @@ public class Main extends Application{
 	public void start(Stage primaryStage) throws Exception {
 
 		this.primaryStage = primaryStage;
-
+		
 		face = new Face();
 		face.init(this);
 		face.setPrefWidth(width);
@@ -128,7 +130,7 @@ public class Main extends Application{
 		text.setBlendMode(BlendMode.OVERLAY);
 //		text.setBlendMode(BlendMode.COLOR_BURN);
 //		text.setBlendMode(BlendMode.MULTIPLY);
-		text.setFont(Font.font(13));
+		text.setFont(new Font(13));
 		text.setWrapText(true);
 		text.setId("" + count);
 //		text.getStyleClass().add("textNormal");
@@ -169,6 +171,9 @@ public class Main extends Application{
 		checkLast();
 		hideLast();
 		
+		if(!texts.get(foundIndex).getText().trim().isEmpty())
+			stack.push(texts.get(foundIndex).getText());
+		
 		deleteButtons.remove(foundIndex);
 		texts.remove(foundIndex);
 		
@@ -182,6 +187,13 @@ public class Main extends Application{
 		
 		MenuItem options = new MenuItem("Einstellungen");
 		options.setOnAction(e -> showOptions());
+		MenuItem info = new MenuItem("Info");
+		info.setOnAction(e -> showInfo());
+		MenuItem undo = new MenuItem("Löschen rückgängig machen");
+		undo.setOnAction(e -> {
+			texts.get(texts.size()-1).setText(stack.pop());
+			checkLast();
+		});
 		MenuItem deleteAll = new MenuItem("Alle löschen");
 		deleteAll.setOnAction(e -> {while(deleteButtons.size() > 1) deleteStuff(deleteButtons.get(0).getId());});
 		MenuItem minimize = new MenuItem("Minimieren");
@@ -194,24 +206,50 @@ public class Main extends Application{
 		MenuItem exit = new MenuItem("Beenden");
 		exit.setOnAction(e -> exitApplication());
 		
-		contextMenu.getItems().addAll(deleteAll, minimize, exit);
+		contextMenu.getItems().addAll(options, info, undo, deleteAll, minimize, exit);
 	}
 	
 	public void showOptions() {
+		Window options = new Window("Einstellungen");
 		
-		VBox optionBox = new VBox();
-		optionBox.prefWidth(100);
-		optionBox.prefHeight(100);
-		optionBox.getChildren().add(new TextField("fuck you xD"));
+		Label optionTitle = new Label("Einstellungen");
+		optionTitle.setFont(new Font(20));
 		
-		Scene optionScene = new Scene(optionBox, Color.GRAY);
-
-		Stage options = new Stage();
-		options.setScene(optionScene);
-		options.initStyle(StageStyle.DECORATED);
+		Button setButton = new Button("Übernehmen");
+		
+		Button cancelButton = new Button("Abbrechen");
+		cancelButton.setOnAction(e -> options.close());
+		
+		options.add(optionTitle);
+		options.add(setButton);
+		options.add(cancelButton);
 		
 		options.sizeToScene();
 		options.show();
+	}
+	
+	public void showInfo() {
+		Window info = new Window("Info");
+
+		Label infoTitle = new Label("Steuerung");
+		infoTitle.setFont(new Font(20));
+		
+		Button okButton = new Button("OK");
+		okButton.setOnAction(e -> info.close());
+		
+		info.add(infoTitle);
+		info.add(new Label("Strg + D:\n"
+				+ "Löschen der aktuellen Notiz"));
+		info.add(new Label("Alt + Hoch/Runter:\n"
+				+ "Verschieben der aktuellen Notiz"));
+		info.add(new Label("Strg + Z:\n"
+				+ "Zuletzt gelöschtes wieder hinzufügen"));
+		info.add(new Label(""));
+		info.add(new Label(""));
+		info.add(okButton);
+
+		info.sizeToScene();
+		info.show();
 	}
 	
 	public void moveStuff(int index, Direction dir) {
@@ -264,5 +302,9 @@ public class Main extends Application{
 	
 	public ArrayList<Text> getTexts(){
 		return texts;
+	}
+	
+	public Deque<String> getStack() {
+		return stack;
 	}
 }

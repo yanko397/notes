@@ -22,11 +22,11 @@ public class Data {
 			pWriter.println("// Autor: Yanko");
 			pWriter.println("// Mail: yanko397@web.de");
 			pWriter.println();
-			pWriter.println("// Comments starting with double slashes and empty lines will be ignored by the program.");
+//			pWriter.println("// Comments starting with double slashes and empty lines will be ignored by the program.");
 //			pWriter.println("// Beginnt eine Zeile mit Doppelslash oder ist sie leer, wird sie vom Programm ignoriert.");
 //			pWriter.println();
-			pWriter.println("// The first not empty line, if starting with two integers, will define the position of the program on the screen");
-//			pWriter.println("// Die erste, nicht leere Zeile die mit zwei Zahlen beginnt, gibt die Position des Programms auf dem Bildschirm an");
+//			pWriter.println("// The first not empty line, if starting with two integers, will define the position of the program on the screen");
+			pWriter.println("// Die erste, nicht leere Zeile die mit zwei Zahlen beginnt, gibt die Position des Programms auf dem Bildschirm an");
 			pWriter.println();
 			pWriter.println((int)stage.getX() + " " + (int)stage.getY());
 			pWriter.println();

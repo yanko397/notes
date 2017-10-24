@@ -1,12 +1,15 @@
 // Autor: Yanko
 // Mail: yanko397@web.de
 
-// Comments starting with double slashes and empty lines will be ignored by the program.
-// The first not empty line, if starting with two integers, will define the position of the program on the screen
+// Die erste, nicht leere Zeile die mit zwei Zahlen beginnt, gibt die Position des Programms auf dem Bildschirm an
 
-793 296
+811 330
 
 eins
-zwei
+viery
 drei
+zwei
+bla
+adsoijad
+aoiwd
 
