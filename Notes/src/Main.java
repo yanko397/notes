@@ -126,9 +126,14 @@ public class Main extends Application{
 		text.setLayoutX(textInsets);
 		text.setLayoutY(textInsets + totalOffset);
 		text.setBlendMode(BlendMode.OVERLAY);
+//		text.setBlendMode(BlendMode.COLOR_BURN);
+//		text.setBlendMode(BlendMode.MULTIPLY);
 		text.setFont(Font.font(13));
 		text.setWrapText(true);
 		text.setId("" + count);
+//		text.getStyleClass().add("textNormal");
+//		text.getStyleClass().removeAll("textLow", "textNormal", "textHigh");
+//		text.getStyleClass().add("textLow");
 		if(!revived.isEmpty()) text.setText(revived);
 		text.setHandlers();
 		
@@ -189,7 +194,7 @@ public class Main extends Application{
 		MenuItem exit = new MenuItem("Beenden");
 		exit.setOnAction(e -> exitApplication());
 		
-		contextMenu.getItems().addAll(options, deleteAll, minimize, exit);
+		contextMenu.getItems().addAll(deleteAll, minimize, exit);
 	}
 	
 	public void showOptions() {

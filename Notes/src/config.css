@@ -8,3 +8,21 @@
 	-fx-background-color: transparent;
 	-fx-graphic: url('../res/delete.png');
 }
+
+.textLow {
+	-fx-border-color: green;
+	-fx-border-insets: -1.5;
+	-fx-border-width: 1;
+}
+
+.textLow .content {
+	-fx-background-color: radial-gradient( focus-angle 0.0deg, focus-distance 0.0%, center 50.0% 50.0%, radius 100.0%, rgb(255,255,255) 0.0, rgb(0,122,17) 100.0 )
+}
+
+.textNormal {
+	-fx-border-color: rgb(255,255,77);
+}
+
+.textNormal .content {
+	-fx-background-color: radial-gradient( focus-angle 0.0deg, focus-distance 0.0%, center 50.0% 50.0%, radius 100.0%, rgb(255,255,255) 0.0, rgb(255,255,128) 100.0 );
+}
