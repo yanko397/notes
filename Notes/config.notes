@@ -3,8 +3,5 @@
 
 // Wärend der Laufzeit des Programms werden hier geänderte Einträge wieder überschrieben.
 
-523 239
-eins
-zwei
-drei
-
+POSITION_X: 0
+POSITION_Y: 0

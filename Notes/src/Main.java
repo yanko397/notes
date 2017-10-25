@@ -64,7 +64,6 @@ public class Main extends Application{
 		face.init(this);
 		face.setPrefWidth(width);
 		face.setPrefHeight(height);
-		face.setHandlers();
 		
 		scene = new Scene(face, Color.TRANSPARENT);
 		scene.getStylesheets().add(getResource("config.css"));
@@ -119,7 +118,6 @@ public class Main extends Application{
 		deleteButton.setLayoutY(deleteButtonInsetY + totalOffset);
 		deleteButton.setId("" + count);
 		deleteButton.getStyleClass().add("deleteButtons");
-		deleteButton.setHandlers();
 
 		deleteButtons.add(deleteButton);
 		face.getChildren().add(deleteButton);
@@ -143,7 +141,6 @@ public class Main extends Application{
 //		text.getStyleClass().removeAll("textLow", "textNormal", "textHigh");
 //		text.getStyleClass().add("textLow");
 		if(!revived.isEmpty()) text.setText(revived);
-		text.setHandlers();
 		
 		texts.add(text);
 		face.getChildren().add(text);
@@ -197,8 +194,10 @@ public class Main extends Application{
 		info.setOnAction(e -> showInfo());
 		MenuItem undo = new MenuItem("Löschen rückgängig machen");
 		undo.setOnAction(e -> {
-			texts.get(texts.size()-1).setText(stack.pop());
-			checkLast();
+			if(!stack.isEmpty()) {
+				texts.get(texts.size()-1).setText(stack.pop());
+				checkLast();
+			}
 		});
 		MenuItem deleteAll = new MenuItem("Alle löschen");
 		deleteAll.setOnAction(e -> {while(deleteButtons.size() > 1) deleteStuff(deleteButtons.get(0).getId());});
@@ -222,7 +221,7 @@ public class Main extends Application{
 		optionTitleGeneral.setFont(new Font(20));
 		
 		CheckBox limit = new CheckBox("maximal " + textLimit + " Zeichen");
-		limit.setSelected(true);
+		limit.setSelected(limited);
 		limit.selectedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> ov, Boolean oldvalue, Boolean newvalue) {
@@ -253,6 +252,7 @@ public class Main extends Application{
 		
 		options.add(optionTitleGeneral);
 		options.add(limit);
+		options.add(new Label(""));
 		options.add(okButton);
 		
 		options.sizeToScene();
@@ -275,7 +275,6 @@ public class Main extends Application{
 				+ "Verschieben der aktuellen Notiz"));
 		info.add(new Label("Strg + Z:\n"
 				+ "Zuletzt gelöschtes wieder hinzufügen"));
-		info.add(new Label(""));
 		info.add(new Label(""));
 		info.add(okButton);
 

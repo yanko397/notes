@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 
@@ -11,9 +13,19 @@ public class Text extends TextArea {
 	public void init(Main main) {
 		this.main = main;
 		texts = main.getTexts();
+		setHandlers();
 	}
 	
-	public void setHandlers() {
+	private void setHandlers() {
+		
+		textProperty().addListener(new ChangeListener<String>( ) {
+			@Override
+			public void changed(ObservableValue<? extends String> ov, String oldValue, String newValue) {
+				if(main.getLimited() && getText().length() > main.getTextLimit()) {
+					setText(getText().substring(0, main.getTextLimit()));
+				}
+			}
+		});
 		
 		setOnKeyReleased(e -> {
 			if(!getText().trim().equals("") && texts.indexOf(this) >= texts.size()-1) {

@@ -11,12 +11,12 @@ public class DeleteButton extends Button{
 	private boolean rightclick = false;
 	
 	public void init(Main main) {
-		
 		this.main = main;
 		primaryStage = main.getPrimaryStage();
+		setHandlers();
 	}
 	
-	public void setHandlers() {
+	private void setHandlers() {
 		
 		setOnMouseReleased(e -> {
 			if(!dragged && !rightclick) main.deleteStuff(getId());

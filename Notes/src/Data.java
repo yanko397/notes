@@ -14,58 +14,67 @@ public class Data {
 
 	public static void save(Stage stage, ArrayList<Text> texts) {
 		
-		PrintWriter pWriter = null;
+		PrintWriter saveWriter = null;
+		PrintWriter configWriter = null;
 		try {
 			Files.deleteIfExists(Paths.get("save.notes"));
-			pWriter = new PrintWriter(new FileWriter("save.notes", true), true);
+			saveWriter = new PrintWriter(new FileWriter("save.notes", true), true);
 
-			pWriter.println("// Autor: Yanko");
-			pWriter.println("// Mail: yanko397@web.de");
-			pWriter.println();
-//			pWriter.println("// Comments starting with double slashes and empty lines will be ignored by the program.");
-//			pWriter.println("// Beginnt eine Zeile mit Doppelslash oder ist sie leer, wird sie vom Programm ignoriert.");
-//			pWriter.println();
-//			pWriter.println("// The first not empty line, if starting with two integers, will define the position of the program on the screen");
-			pWriter.println("// Die erste, nicht leere Zeile die mit zwei Zahlen beginnt, gibt die Position des Programms auf dem Bildschirm an");
-			pWriter.println();
-			pWriter.println((int)stage.getX() + " " + (int)stage.getY());
-			pWriter.println();
+			saveWriter.println("// Autor: Yanko");
+			saveWriter.println("// Mail: yanko397@web.de");
+			saveWriter.println();
+			saveWriter.println("// Wärend der Laufzeit des Programms werden hier geänderte Einträge wieder überschrieben.");
+			saveWriter.println();
 			
 			for(TextArea text : texts)
-				pWriter.println(text.getText());
+				saveWriter.println(text.getText());
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			Files.deleteIfExists(Paths.get("config.notes"));
+			configWriter = new PrintWriter(new FileWriter("config.notes", true), true);
+			
+			configWriter.println("// Autor: Yanko");
+			configWriter.println("// Mail: yanko397@web.de");
+			configWriter.println();
+			configWriter.println("// Wärend der Laufzeit des Programms werden hier geänderte Einträge wieder überschrieben.");
+			configWriter.println();
+			
+			configWriter.println("POSITION_X: " + (int)stage.getX());
+			configWriter.println("POSITION_Y: " + (int)stage.getY());
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		if (pWriter != null) pWriter.close();
+		if (saveWriter != null) saveWriter.close();
 	}
 	
 	public static void restore(Main main) throws IOException {
 		
-		Stage stage = main.getPrimaryStage();
+		ArrayList<String[]> options = new ArrayList<String[]>();
 		ArrayList<Text> texts = main.getTexts();
+		
+		if(Files.exists(Paths.get("config.notes"))) {
+			BufferedReader br = new BufferedReader(new FileReader("config.notes"));
+			
+			String line = br.readLine();
+			while(line != null) {
+				if(!line.trim().isEmpty() && !line.trim().startsWith("//")) {
+					options.add(line.trim().split(" "));
+				}
+				line = br.readLine();
+			}
+			
+			br.close();
+//			stage.centerOnScreen();
+		}
 		
 		if(Files.exists(Paths.get("save.notes"))) {
 			BufferedReader br = new BufferedReader(new FileReader("save.notes"));
-
-			String ifFails = "";
-			try {
-				while(ifFails.isEmpty()) {
-					String temp = br.readLine();
-					if(temp == null) break;
-					if(!temp.startsWith("//")) {
-						ifFails += temp.trim();
-					}
-				}
-				String[] pos = ifFails.split(" ");
-				
-				stage.setX(Integer.parseInt(pos[0]));
-				stage.setY(Integer.parseInt(pos[1]));
-			} catch (Exception e){
-				stage.centerOnScreen();
-				main.addStuff(ifFails);
-			}
 			
 			String line = br.readLine();
 			while(line != null) {

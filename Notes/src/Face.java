@@ -7,9 +7,10 @@ public class Face extends Pane {
 	
 	public void init(Main main) {
 		primaryStage = main.getPrimaryStage();
+		setHandlers();
 	}
 
-	public void setHandlers() {
+	private void setHandlers() {
 
 		final Delta dragDelta = new Delta();
 		
