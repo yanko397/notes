@@ -6,7 +6,10 @@ import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -30,6 +33,9 @@ public class Main extends Application{
 	private final int textHeight = 50;
 	private final int textInsets = 15;
 	private final int absoluteOffset = textHeight + 5;
+	
+	private boolean limited = true;
+	private int textLimit = 100;
 	
 	private int count = 0;
 	private int totalOffset = 0;
@@ -212,17 +218,42 @@ public class Main extends Application{
 	public void showOptions() {
 		Window options = new Window("Einstellungen");
 		
-		Label optionTitle = new Label("Einstellungen");
-		optionTitle.setFont(new Font(20));
+		Label optionTitleGeneral = new Label("Allgemein");
+		optionTitleGeneral.setFont(new Font(20));
 		
-		Button setButton = new Button("Übernehmen");
+		CheckBox limit = new CheckBox("maximal " + textLimit + " Zeichen");
+		limit.setSelected(true);
+		limit.selectedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> ov, Boolean oldvalue, Boolean newvalue) {
+				boolean failed = false;
+
+				if(newvalue) {
+					for(Text text : texts) {
+						if(text.getText().length() > textLimit) {
+							limit.setSelected(false);
+							failed = true;
+							
+							Alert alert = new Alert(AlertType.WARNING);
+							alert.setTitle("Warnung");
+							alert.setHeaderText(null);
+							alert.setContentText("Bitte erst alle Notizen auf unter " + textLimit + " Zeichen kürzen.");
+							alert.showAndWait();
+							break;
+						}
+					}
+				}
+				
+				if(!failed) limited = newvalue;
+			}
+		});
 		
-		Button cancelButton = new Button("Abbrechen");
-		cancelButton.setOnAction(e -> options.close());
+		Button okButton = new Button("OK");
+		okButton.setOnAction(e -> options.close());
 		
-		options.add(optionTitle);
-		options.add(setButton);
-		options.add(cancelButton);
+		options.add(optionTitleGeneral);
+		options.add(limit);
+		options.add(okButton);
 		
 		options.sizeToScene();
 		options.show();
@@ -306,5 +337,13 @@ public class Main extends Application{
 	
 	public Deque<String> getStack() {
 		return stack;
+	}
+	
+	public boolean getLimited() {
+		return limited;
+	}
+	
+	public int getTextLimit() {
+		return textLimit;
 	}
 }
