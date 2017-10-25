@@ -82,7 +82,7 @@ public class Main extends Application{
 		primaryStage.focusedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) {
-				Data.save(primaryStage, texts);
+				Data.save(primaryStage, texts, limited);
 			}
 		});
 
@@ -205,7 +205,7 @@ public class Main extends Application{
 		minimize.setOnAction(e -> primaryStage.setIconified(true));
 		MenuItem restart = new MenuItem("Neu starten");
 		restart.setOnAction(e -> {
-			Data.save(primaryStage, texts);
+			Data.save(primaryStage, texts, limited);
 			UglyShit.restartApplication(startArgs);
 		});
 		MenuItem exit = new MenuItem("Beenden");
@@ -318,7 +318,7 @@ public class Main extends Application{
 	}
 	
 	public void exitApplication() {
-		Data.save(primaryStage, texts);
+		Data.save(primaryStage, texts, limited);
 		System.exit(0);
 	}
 	
@@ -338,6 +338,9 @@ public class Main extends Application{
 		return stack;
 	}
 	
+	public void setLimited(boolean limited) {
+		this.limited = limited;
+	}
 	public boolean getLimited() {
 		return limited;
 	}
