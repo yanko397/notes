@@ -93,9 +93,9 @@ public class Data {
 					
 				case "CHARACTERS_LIMIT":
 					try {
-						main.setLimit(Integer.parseInt(s[1].trim()));
+						main.setTextLimit(Integer.parseInt(s[1].trim()));
 					} catch(Exception e) {
-						main.setLimit(Main.DEFAULT_LIMIT);
+						main.setTextLimit(Main.DEFAULT_LIMIT);
 					}
 					break;
 					
@@ -111,7 +111,7 @@ public class Data {
 			String line = br.readLine();
 			while(line != null) {
 				if(!line.trim().isEmpty() && !line.startsWith("//")) {
-					if(line.length() > main.getTextLimit()) main.setLimit(line.length());
+					if(line.length() > main.getTextLimit()) main.setTextLimit(line.length());
 					main.addStuff(line);
 				}
 				line = br.readLine();

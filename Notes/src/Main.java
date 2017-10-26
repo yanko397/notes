@@ -3,15 +3,11 @@ import java.util.Deque;
 import java.util.LinkedList;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
@@ -23,7 +19,10 @@ public class Main extends Application{
 	
 	private static String[] startArgs = null;
 	
-	public static final int DEFAULT_LIMIT = 100;
+	public static final String	VERSION			= "1.7.1";
+	public static final String	AUTHOR			= "Johannes Bräuer";
+	public static final String	MAIL			= "yanko397@web.de";
+	public static final int		DEFAULT_LIMIT	= 100;
 	
 	private final int width = 300;
 	private final int height = 80;
@@ -46,7 +45,7 @@ public class Main extends Application{
 	
 	private Deque<String> stack = new LinkedList<String>();
 	private ArrayList<Text> texts = new ArrayList<Text>();
-	private ArrayList<Button> deleteButtons = new ArrayList<Button>();
+	private ArrayList<DeleteButton> deleteButtons = new ArrayList<DeleteButton>();
 
 	public enum Direction {UP,DOWN}
 	
@@ -73,7 +72,7 @@ public class Main extends Application{
 		primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("note.png")));
 		primaryStage.setScene(scene);
 		
-		addContextMenu();
+		new RightclickMenu(this);
 		
 		Data.restore(this);
 		
@@ -116,7 +115,7 @@ public class Main extends Application{
 		deleteButton.setPrefWidth(deleteButtonWidth);
 		deleteButton.setLayoutX(deleteButtonInsetX);
 		deleteButton.setLayoutY(deleteButtonInsetY + totalOffset);
-		deleteButton.setId("" + count);
+		deleteButton.setId(count+"");
 		deleteButton.getStyleClass().add("deleteButtons");
 
 		deleteButtons.add(deleteButton);
@@ -136,7 +135,7 @@ public class Main extends Application{
 //		text.setBlendMode(BlendMode.MULTIPLY);
 		text.setFont(new Font(13));
 		text.setWrapText(true);
-		text.setId("" + count);
+		text.setId(count+"");
 //		text.getStyleClass().add("textNormal");
 //		text.getStyleClass().removeAll("textLow", "textNormal", "textHigh");
 //		text.getStyleClass().add("textLow");
@@ -183,166 +182,6 @@ public class Main extends Application{
 		totalOffset -= absoluteOffset;
 	}
 	
-	private void addContextMenu() {
-		
-		ContextMenu contextMenu = new ContextMenu();
-		face.setOnContextMenuRequested(e -> contextMenu.show(primaryStage, e.getScreenX(), e.getScreenY()));
-		
-		MenuItem options = new MenuItem("Einstellungen");
-		options.setOnAction(e -> showOptions());
-		MenuItem info = new MenuItem("Info");
-		info.setOnAction(e -> showInfo());
-		MenuItem undo = new MenuItem("Löschen rückgängig machen");
-		undo.setOnAction(e -> {
-			if(!stack.isEmpty()) {
-				texts.get(texts.size()-1).setText(stack.pop());
-				checkLast();
-			}
-		});
-		MenuItem deleteAll = new MenuItem("Alle löschen");
-		deleteAll.setOnAction(e -> {while(deleteButtons.size() > 1) deleteStuff(deleteButtons.get(0).getId());});
-		MenuItem minimize = new MenuItem("Minimieren");
-		minimize.setOnAction(e -> primaryStage.setIconified(true));
-		MenuItem restart = new MenuItem("Neu starten");
-		restart.setOnAction(e -> {
-			Data.save(this);
-			UglyShit.restartApplication(startArgs);
-		});
-		MenuItem exit = new MenuItem("Beenden");
-		exit.setOnAction(e -> exitApplication());
-		
-		contextMenu.getItems().addAll(options, info, undo, deleteAll, minimize, exit);
-	}
-	
-	public void showOptions() {
-		Window options = new Window("Einstellungen");
-		
-		Label optionTitleGeneral = new Label("Allgemein");
-		optionTitleGeneral.setFont(new Font(20));
-		
-//		CheckBox limitedCheckBox = new CheckBox("Zeichenanzahl beschränken");
-//		limitedCheckBox.setSelected(limited);
-//		limitedCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
-//			@Override
-//			public void changed(ObservableValue<? extends Boolean> ov, Boolean oldvalue, Boolean newvalue) {
-//				boolean failed = false;
-//
-//				if(newvalue) {
-//					for(Text text : texts) {
-//						if(text.getText().length() > textLimit) {
-//							limitedCheckBox.setSelected(false);
-//							failed = true;
-//							
-//							Alert alert = new Alert(AlertType.WARNING);
-//							alert.setTitle("Achtung");
-//							alert.setHeaderText(null);
-//							alert.setContentText("Bitte erst alle Notizen auf unter " + textLimit + " Zeichen kürzen.");
-//							alert.showAndWait();
-//							break;
-//						}
-//					}
-//				}
-//				
-//				if(!failed) limited = newvalue;
-//			}
-//		});
-		
-		NumberTextField limitTextField = new NumberTextField(textLimit+"");
-		
-		Button acceptButton = new Button("Übernehmen");
-		acceptButton.setOnAction(e -> {
-			
-			boolean somethingFailed = false;
-			
-//			// LIMIT CHECK BOX
-//			boolean checkboxFailed = false;
-//			if(limitedCheckBox.isSelected()) {
-//				for(Text text : texts) {
-//					if(text.getText().length() > textLimit) {
-//						limitedCheckBox.setSelected(false);
-//						checkboxFailed = true;
-//						somethingFailed = true;
-//						
-//						Alert alert = new Alert(AlertType.WARNING);
-//						alert.setTitle("Achtung");
-//						alert.setHeaderText(null);
-//						alert.setContentText("Bitte erst alle Notizen auf unter " + textLimit + " Zeichen kürzen.");
-//						alert.showAndWait();
-//						break;
-//					}
-//				}
-//			}
-//			if(!checkboxFailed) limited = limitedCheckBox.isSelected();
-			
-			// LIMIT TEXT FIELD
-			try {
-				int inputLimit = Integer.parseInt(limitTextField.getText());
-				boolean inputFailed = false;
-				for(Text text : texts) {
-					if(text.getText().length() > inputLimit) {
-						inputFailed = true;
-						somethingFailed = true;
-						
-						Alert alert = new Alert(AlertType.WARNING);
-						alert.setTitle("Achtung");
-						alert.setHeaderText(null);
-						alert.setContentText("Die eingegebene Zahl darf nicht kleiner sein als deine längste Notiz lang ist.");
-						alert.showAndWait();
-						
-						break;
-					}
-				}
-				
-				if(!inputFailed) {
-					textLimit = inputLimit;
-				}
-			} catch(Exception limitFail) {
-				somethingFailed = true;
-				
-				Alert alert = new Alert(AlertType.WARNING);
-				alert.setTitle("Achtung");
-				alert.setHeaderText(null);
-				alert.setContentText("Die Eingabe ist ungültig.");
-				alert.showAndWait();
-			}
-
-			if(!somethingFailed) options.close();
-		});
-		
-		options.add(optionTitleGeneral);
-//		options.add(limitedCheckBox);
-		options.add(new Label("maximale Anzahl Zeichen:"));
-		options.add(limitTextField);
-		options.add(new Label(""));
-		options.add(acceptButton);
-		
-		options.sizeToScene();
-		options.show();
-	}
-	
-	public void showInfo() {
-		Window info = new Window("Info");
-
-		Label infoTitle = new Label("Steuerung");
-		infoTitle.setFont(new Font(20));
-		
-		Button okButton = new Button("OK");
-		okButton.setOnAction(e -> info.close()); 
-		
-		info.add(infoTitle);
-		info.add(new Label("Strg + D:\n"
-				+ "Löschen der aktuellen Notiz"));
-		info.add(new Label("Alt + Hoch/Runter:\n"
-				+ "Verschieben der aktuellen Notiz"));
-		info.add(new Label("Strg + Z:\n"
-				+ "Zuletzt gelöschtes wieder hinzufügen"));
-		info.add(new Label(""));
-		info.add(okButton);
-
-		info.sizeToScene();
-		info.show();
-	}
-	
 	public void moveStuff(int index, Direction dir) {
 		String swap = "";
 		if(dir.equals(Direction.DOWN)) {
@@ -372,22 +211,23 @@ public class Main extends Application{
 	}
 	
 	public void hideLast() {
-		for(Button button : deleteButtons) {
+		for(Button button : deleteButtons)
 			button.setVisible(true);
-		}
 		deleteButtons.get(deleteButtons.size()-1).setVisible(false);
 	}
 	
 	public void exitApplication() {
 		Data.save(this);
-		System.exit(0);
+		Platform.exit();
 	}
-	
-	public void 			setLimit(int value)			{textLimit = value;}
-	
-	public String 			getResource(String path) 	{return Main.class.getResource(path).toExternalForm();}
-	public Stage 			getPrimaryStage() 			{return primaryStage;}
-	public ArrayList<Text> 	getTexts() 					{return texts;}
-	public Deque<String> 	getStack() 					{return stack;}
-	public int 				getTextLimit() 				{return textLimit;}
+
+	public String[]					getArgs()					{return startArgs;}
+	public Stage 					getPrimaryStage() 			{return primaryStage;}
+	public Face						getFace()					{return face;}
+	public ArrayList<Text> 			getTexts() 					{return texts;}
+	public ArrayList<DeleteButton>	getDeleteButtons()			{return deleteButtons;}
+	public Deque<String> 			getStack() 					{return stack;}
+	public String 					getResource(String path) 	{return Main.class.getResource(path).toExternalForm();}
+	public int 						getTextLimit() 				{return textLimit;}
+	public void 					setTextLimit(int value)		{textLimit = value;}
 }
