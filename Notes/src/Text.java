@@ -13,7 +13,6 @@ public class Text extends TextArea {
 
 	private Main main = null;
 	private ArrayList<Text> texts = null;
-	private String oldText = "";
 
 	/**
 	 * initiates the text with the calling object
@@ -34,9 +33,12 @@ public class Text extends TextArea {
 			@Override
 			public void changed(ObservableValue<? extends String> ov, String oldValue, String newValue) {
 				if(getText().length() > main.getTextLimit())
-					setText(oldText);
-				else
-					oldText = getText();
+					setText(oldValue);
+				if(newValue.isEmpty() && oldValue.length() > 0) {
+					main.deleteStuff(getId());
+					main.getTexts().get(main.getTexts().size()-1).requestFocus();
+					main.getTexts().get(main.getTexts().size()-1).positionCaret(Integer.MAX_VALUE);;
+				}
 			}
 		});
 		

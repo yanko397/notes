@@ -32,7 +32,8 @@ public class Window extends Stage {
 	}
 	
 	/**
-	 * @param node adds an element to the window
+	 * adds an element to the window
+	 * @param node element to be added
 	 */
 	public void add(Node node) {
 		box.getChildren().add(node);
