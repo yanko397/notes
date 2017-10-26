@@ -1,6 +1,15 @@
 import javafx.scene.control.TextField;
 
+/**
+ * @author Yanko
+ * a text field that only allows numbers as input
+ */
 public class NumberTextField extends TextField{
+		
+		/**
+		 * constructor
+		 * @param text number that will be in the text field
+		 */
 		public NumberTextField(String text) {
 			super(text);
 		}

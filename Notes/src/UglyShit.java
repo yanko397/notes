@@ -8,8 +8,15 @@ import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef.HWND;
 
+/**
+ * @author Yanko
+ * class that contains all the ugly methods (props an Christian für den Namen :D)
+ */
 public class UglyShit {
 
+	/**
+	 * method that makes it possible to minimize the window by clicking on the task bar icon even tho it is an undecorated window (wtf javafx)
+	 */
 	@SuppressWarnings("restriction")
 	public static void behinderterHaesslicherKack() {
 		long lhwnd = com.sun.glass.ui.Window.getWindows().get(0).getNativeWindow();
@@ -21,6 +28,10 @@ public class UglyShit {
 		user32.SetWindowLong(hwnd, GWL_STYLE, newStyle);
 	}
 	
+	/**
+	 * only sometimes working method to restart the application
+	 * @param args
+	 */
 	public static void restartApplication(String[] args) {
 		
 		try {
@@ -38,6 +49,7 @@ public class UglyShit {
 
 			Runtime.getRuntime().exec(cmd.toString());
 			System.exit(0);
+//			Platform.exit();		//das könnte vll funzen? später testen
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("ERROR - restart failed");

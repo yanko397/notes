@@ -2,13 +2,25 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.text.Font;
 
+/**
+ * @author Yanko
+ * class of the info window
+ */
 public class Info extends Window {
 
+	/**
+	 * initiates the info window with the calling object
+	 * @param main object calling this function
+	 */
 	public Info(Main main) {
 		super("Info");
 		init(main);
 	}
 	
+	/**
+	 * sets up the info window
+	 * @param main object calling this function
+	 */
 	private void init(Main main) {
 		Label controlTitle = new Label();
 		controlTitle.setText("Steuerung");

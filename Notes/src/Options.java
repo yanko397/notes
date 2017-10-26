@@ -4,13 +4,25 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.text.Font;
 
+/**
+ * @author Yanko
+ * class of the options window
+ */
 public class Options extends Window{
 
+	/**
+	 * constructor
+	 * @param main object calling this function
+	 */
 	public Options(Main main) {
 		super("Einstellungen");
 		init(main);
 	}
 
+	/**
+	 * sets up the option window
+	 * @param main
+	 */
 	private void init(Main main) {
 		Label optionTitleGeneral = new Label("Allgemein");
 		optionTitleGeneral.setFont(new Font(20));

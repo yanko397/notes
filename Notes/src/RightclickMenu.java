@@ -1,12 +1,24 @@
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 
+/**
+ * @author Yanko
+ * class for the right click menu
+ */
 public class RightclickMenu extends ContextMenu {
 	
+	/**
+	 * constructor
+	 * @param main object calling this function
+	 */
 	public RightclickMenu(Main main) {
 		init(main);
 	}
 	
+	/**
+	 * sets up the rightclick menu
+	 * @param main object calling this function
+	 */
 	private void init(Main main) {
 		main.getFace().setOnContextMenuRequested(e -> show(main.getPrimaryStage(), e.getScreenX(), e.getScreenY()));
 		

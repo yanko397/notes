@@ -9,8 +9,16 @@ import java.util.ArrayList;
 
 import javafx.scene.control.TextArea;
 
+/**
+ * @author Yanko
+ * contains methods so save or restore data from or to files
+ */
 public class Data {
 
+	/**
+	 * saves data to a config file and all notes to a save file
+	 * @param main object calling this function
+	 */
 	public static void save(Main main) {
 		
 		// CONFIG
@@ -45,6 +53,11 @@ public class Data {
 		if (saveWriter != null) saveWriter.close();
 	}
 	
+	/**
+	 * restores information from a config and a save file
+	 * @param main object calling this function
+	 * @throws IOException
+	 */
 	public static void restore(Main main) throws IOException {
 		
 		ArrayList<String[]> options = new ArrayList<String[]>();
@@ -125,6 +138,10 @@ public class Data {
 		main.checkLast();
 	}
 	
+	/**
+	 * writes a message
+	 * @param w writer that shall write the message
+	 */
 	private static void message(PrintWriter w) {
 		w.println("// Autor: Yanko");
 		w.println("// Mail: yanko397@web.de");

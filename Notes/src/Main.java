@@ -15,6 +15,10 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+/**
+ * @author Yanko
+ * main function
+ */
 public class Main extends Application{
 	
 	private static String[] startArgs = null;
@@ -49,6 +53,10 @@ public class Main extends Application{
 
 	public enum Direction {UP,DOWN}
 	
+	/**
+	 * launches the fx application
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		startArgs = args;
 		launch(args);
@@ -91,10 +99,17 @@ public class Main extends Application{
 		UglyShit.behinderterHaesslicherKack();
 	}
 	
+	/**
+	 * add stuff with an empty string
+	 */
 	public void addStuff() {
 		addStuff("");
 	}
 	
+	/**
+	 * adds a text area with text and an corresponding delete button
+	 * @param revived string to be pasted in the box
+	 */
 	public void addStuff(String revived) {
 		
 		addText(revived);
@@ -108,6 +123,9 @@ public class Main extends Application{
 		count++;
 	}
 	
+	/**
+	 * adds a delete button
+	 */
 	private void addDeleteButton() {
 
 		DeleteButton deleteButton = new DeleteButton();
@@ -122,6 +140,10 @@ public class Main extends Application{
 		face.getChildren().add(deleteButton);
 	}
 	
+	/**
+	 * adds a text area with the given text in it
+	 * @param revived string to be pasted in the box
+	 */
 	private void addText(String revived) {
 		
 		Text text = new Text();
@@ -145,6 +167,11 @@ public class Main extends Application{
 		face.getChildren().add(text);
 	}
 	
+	
+	/**
+	 * deletes a text area and the corresponding delete button at a given index
+	 * @param index index of the elements to delete
+	 */
 	public void deleteStuff(String index) {
 		
 		if(texts.size() == 1) {
@@ -182,6 +209,11 @@ public class Main extends Application{
 		totalOffset -= absoluteOffset;
 	}
 	
+	/**
+	 * elements at the given index and the next elements above or below them switch places
+	 * @param index index of the current element
+	 * @param dir direction to move the current element
+	 */
 	public void moveStuff(int index, Direction dir) {
 		String swap = "";
 		if(dir.equals(Direction.DOWN)) {
@@ -204,23 +236,34 @@ public class Main extends Application{
 		}
 	}
 	
+	/**
+	 * checks if the last text area is empty; if it isn't it adds an empty one
+	 */
 	public void checkLast() {
 		if(!texts.get(texts.size()-1).getText().trim().isEmpty()) {
 			addStuff();
 		}
 	}
 	
+	/**
+	 * shows all delete buttons and hides the last one
+	 */
 	public void hideLast() {
 		for(Button button : deleteButtons)
 			button.setVisible(true);
 		deleteButtons.get(deleteButtons.size()-1).setVisible(false);
 	}
 	
+	/**
+	 * exits the application
+	 */
 	public void exitApplication() {
 		Data.save(this);
 		Platform.exit();
 	}
 
+	// ======================== getter and setter ============================ //
+	
 	public String[]					getArgs()					{return startArgs;}
 	public Stage 					getPrimaryStage() 			{return primaryStage;}
 	public Face						getFace()					{return face;}

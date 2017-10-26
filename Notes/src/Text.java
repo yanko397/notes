@@ -5,18 +5,29 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 
+/**
+ * @author Yanko
+ * class for a text area text
+ */
 public class Text extends TextArea {
 
 	private Main main = null;
 	private ArrayList<Text> texts = null;
 	private String oldText = "";
 
+	/**
+	 * initiates the text with the calling object
+	 * @param main object calling this function
+	 */
 	public void init(Main main) {
 		this.main = main;
 		texts = main.getTexts();
 		setHandlers();
 	}
 	
+	/**
+	 * sets all handlers for the text area
+	 */
 	private void setHandlers() {
 		
 		textProperty().addListener(new ChangeListener<String>( ) {

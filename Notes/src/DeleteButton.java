@@ -2,6 +2,10 @@ import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
+/**
+ * @author Yanko
+ * class of a delete button
+ */
 public class DeleteButton extends Button{
 
 	private Main main = null;
@@ -10,12 +14,20 @@ public class DeleteButton extends Button{
 	private boolean dragged = false;
 	private boolean rightclick = false;
 	
+	/**
+	 * initiate the button with the calling object
+	 * @param main object calling this function
+	 */
 	public void init(Main main) {
 		this.main = main;
 		primaryStage = main.getPrimaryStage();
 		setHandlers();
 	}
 	
+	
+	/**
+	 * sets all handlers for this button
+	 */
 	private void setHandlers() {
 		
 		setOnMouseReleased(e -> {
