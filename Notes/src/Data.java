@@ -44,8 +44,13 @@ public class Data {
 			saveWriter = new PrintWriter(new FileWriter("notes.save", true), true);
 			message(saveWriter);
 			
-			for(TextArea text : main.getTexts())
-				saveWriter.println(text.getText());
+			for(TextArea text : main.getTexts()) {
+				if(text.getStyleClass().contains("marked")) {
+					saveWriter.println("*marked*" + text.getText());
+				} else {
+					saveWriter.println(text.getText());
+				}
+			}
 			
 		} catch (IOException e) {
 			e.printStackTrace();

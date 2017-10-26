@@ -17,9 +17,9 @@ import javafx.stage.StageStyle;
 
 /**
  * @author Yanko
- * main function
+ * main class
  */
-public class Main extends Application{
+public class Main extends Application {
 	
 	private static String[] startArgs = null;
 	
@@ -153,15 +153,18 @@ public class Main extends Application{
 		text.setLayoutX(textInsets);
 		text.setLayoutY(textInsets + totalOffset);
 		text.setBlendMode(BlendMode.OVERLAY);
-//		text.setBlendMode(BlendMode.COLOR_BURN);
-//		text.setBlendMode(BlendMode.MULTIPLY);
 		text.setFont(new Font(13));
 		text.setWrapText(true);
 		text.setId(count+"");
-//		text.getStyleClass().add("textNormal");
-//		text.getStyleClass().removeAll("textLow", "textNormal", "textHigh");
-//		text.getStyleClass().add("textLow");
-		if(!revived.isEmpty()) text.setText(revived);
+		text.setStyle("-fx-border-color: green;" + 
+				"-fx-border-insets: -1.5;" + 
+				"-fx-border-width: 1;");
+		text.getStyleClass().add("text");
+		if(revived.startsWith("*marked*")) {
+			text.mark();
+			revived = revived.substring(8);
+		} else text.unmark();
+		text.setText(revived);
 		
 		texts.add(text);
 		face.getChildren().add(text);

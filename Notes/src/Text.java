@@ -13,6 +13,7 @@ public class Text extends TextArea {
 
 	private Main main = null;
 	private ArrayList<Text> texts = null;
+	private boolean marked = false;
 
 	/**
 	 * initiates the text with the calling object
@@ -22,6 +23,26 @@ public class Text extends TextArea {
 		this.main = main;
 		texts = main.getTexts();
 		setHandlers();
+	}
+	
+	public void mark() {
+		marked = true;
+		getStyleClass().remove("unmarked");
+		getStyleClass().add("marked");
+//		setOpacity(1);
+//		setStyle("-fx-border-color: black;"
+//				+ "-fx-border-insets: -1.2;"
+//				+ "-fx-border-width: 2;");
+	}
+	
+	public void unmark() {
+		marked = false;
+		getStyleClass().remove("marked");
+		getStyleClass().add("unmarked");
+//		setOpacity(0.7);
+//		setStyle("-fx-border-color: green;" + 
+//				"-fx-border-insets: -1.5;" + 
+//				"-fx-border-width: 1;");
 	}
 	
 	/**
@@ -38,6 +59,17 @@ public class Text extends TextArea {
 					main.deleteStuff(getId());
 					main.getTexts().get(main.getTexts().size()-1).requestFocus();
 					main.getTexts().get(main.getTexts().size()-1).positionCaret(Integer.MAX_VALUE);;
+				}
+			}
+		});
+		
+		setOnMouseClicked(e -> {
+			if(e.getClickCount() == 2) {
+				deselect();
+				if(marked) {
+					unmark();
+				} else {
+					mark();
 				}
 			}
 		});
