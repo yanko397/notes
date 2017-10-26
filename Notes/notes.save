@@ -3,6 +3,7 @@
 
 // Wärend der Laufzeit des Programms werden hier geänderte Einträge wieder überschrieben.
 
-POSITION_X: 829
-POSITION_Y: 445
-LIMITED_CHARACTERS_ENABLED: false
+eins
+zwei
+drei
+

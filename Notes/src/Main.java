@@ -9,7 +9,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -24,6 +23,8 @@ public class Main extends Application{
 	
 	private static String[] startArgs = null;
 	
+	public static final int DEFAULT_LIMIT = 100;
+	
 	private final int width = 300;
 	private final int height = 80;
 	private final int deleteButtonWidth = 40;
@@ -34,8 +35,7 @@ public class Main extends Application{
 	private final int textInsets = 15;
 	private final int absoluteOffset = textHeight + 5;
 	
-	private boolean limited = true;
-	private int textLimit = 100;
+	private int textLimit = DEFAULT_LIMIT;
 	
 	private int count = 0;
 	private int totalOffset = 0;
@@ -82,7 +82,7 @@ public class Main extends Application{
 		primaryStage.focusedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) {
-				Data.save(primaryStage, texts, limited);
+				Data.save(Main.this);
 			}
 		});
 
@@ -205,7 +205,7 @@ public class Main extends Application{
 		minimize.setOnAction(e -> primaryStage.setIconified(true));
 		MenuItem restart = new MenuItem("Neu starten");
 		restart.setOnAction(e -> {
-			Data.save(primaryStage, texts, limited);
+			Data.save(this);
 			UglyShit.restartApplication(startArgs);
 		});
 		MenuItem exit = new MenuItem("Beenden");
@@ -220,40 +220,101 @@ public class Main extends Application{
 		Label optionTitleGeneral = new Label("Allgemein");
 		optionTitleGeneral.setFont(new Font(20));
 		
-		CheckBox limit = new CheckBox("maximal " + textLimit + " Zeichen");
-		limit.setSelected(limited);
-		limit.selectedProperty().addListener(new ChangeListener<Boolean>() {
-			@Override
-			public void changed(ObservableValue<? extends Boolean> ov, Boolean oldvalue, Boolean newvalue) {
-				boolean failed = false;
-
-				if(newvalue) {
-					for(Text text : texts) {
-						if(text.getText().length() > textLimit) {
-							limit.setSelected(false);
-							failed = true;
-							
-							Alert alert = new Alert(AlertType.WARNING);
-							alert.setTitle("Warnung");
-							alert.setHeaderText(null);
-							alert.setContentText("Bitte erst alle Notizen auf unter " + textLimit + " Zeichen kürzen.");
-							alert.showAndWait();
-							break;
-						}
+//		CheckBox limitedCheckBox = new CheckBox("Zeichenanzahl beschränken");
+//		limitedCheckBox.setSelected(limited);
+//		limitedCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+//			@Override
+//			public void changed(ObservableValue<? extends Boolean> ov, Boolean oldvalue, Boolean newvalue) {
+//				boolean failed = false;
+//
+//				if(newvalue) {
+//					for(Text text : texts) {
+//						if(text.getText().length() > textLimit) {
+//							limitedCheckBox.setSelected(false);
+//							failed = true;
+//							
+//							Alert alert = new Alert(AlertType.WARNING);
+//							alert.setTitle("Achtung");
+//							alert.setHeaderText(null);
+//							alert.setContentText("Bitte erst alle Notizen auf unter " + textLimit + " Zeichen kürzen.");
+//							alert.showAndWait();
+//							break;
+//						}
+//					}
+//				}
+//				
+//				if(!failed) limited = newvalue;
+//			}
+//		});
+		
+		NumberTextField limitTextField = new NumberTextField(textLimit+"");
+		
+		Button acceptButton = new Button("Übernehmen");
+		acceptButton.setOnAction(e -> {
+			
+			boolean somethingFailed = false;
+			
+//			// LIMIT CHECK BOX
+//			boolean checkboxFailed = false;
+//			if(limitedCheckBox.isSelected()) {
+//				for(Text text : texts) {
+//					if(text.getText().length() > textLimit) {
+//						limitedCheckBox.setSelected(false);
+//						checkboxFailed = true;
+//						somethingFailed = true;
+//						
+//						Alert alert = new Alert(AlertType.WARNING);
+//						alert.setTitle("Achtung");
+//						alert.setHeaderText(null);
+//						alert.setContentText("Bitte erst alle Notizen auf unter " + textLimit + " Zeichen kürzen.");
+//						alert.showAndWait();
+//						break;
+//					}
+//				}
+//			}
+//			if(!checkboxFailed) limited = limitedCheckBox.isSelected();
+			
+			// LIMIT TEXT FIELD
+			try {
+				int inputLimit = Integer.parseInt(limitTextField.getText());
+				boolean inputFailed = false;
+				for(Text text : texts) {
+					if(text.getText().length() > inputLimit) {
+						inputFailed = true;
+						somethingFailed = true;
+						
+						Alert alert = new Alert(AlertType.WARNING);
+						alert.setTitle("Achtung");
+						alert.setHeaderText(null);
+						alert.setContentText("Die eingegebene Zahl darf nicht kleiner sein als deine längste Notiz lang ist.");
+						alert.showAndWait();
+						
+						break;
 					}
 				}
 				
-				if(!failed) limited = newvalue;
+				if(!inputFailed) {
+					textLimit = inputLimit;
+				}
+			} catch(Exception limitFail) {
+				somethingFailed = true;
+				
+				Alert alert = new Alert(AlertType.WARNING);
+				alert.setTitle("Achtung");
+				alert.setHeaderText(null);
+				alert.setContentText("Die Eingabe ist ungültig.");
+				alert.showAndWait();
 			}
+
+			if(!somethingFailed) options.close();
 		});
 		
-		Button okButton = new Button("OK");
-		okButton.setOnAction(e -> options.close());
-		
 		options.add(optionTitleGeneral);
-		options.add(limit);
+//		options.add(limitedCheckBox);
+		options.add(new Label("maximale Anzahl Zeichen:"));
+		options.add(limitTextField);
 		options.add(new Label(""));
-		options.add(okButton);
+		options.add(acceptButton);
 		
 		options.sizeToScene();
 		options.show();
@@ -318,34 +379,15 @@ public class Main extends Application{
 	}
 	
 	public void exitApplication() {
-		Data.save(primaryStage, texts, limited);
+		Data.save(this);
 		System.exit(0);
 	}
 	
-	public String getResource(String path) {
-		return Main.class.getResource(path).toExternalForm();
-	}
+	public void 			setLimit(int value)			{textLimit = value;}
 	
-	public Stage getPrimaryStage() {
-		return primaryStage;
-	}
-	
-	public ArrayList<Text> getTexts(){
-		return texts;
-	}
-	
-	public Deque<String> getStack() {
-		return stack;
-	}
-	
-	public void setLimited(boolean limited) {
-		this.limited = limited;
-	}
-	public boolean getLimited() {
-		return limited;
-	}
-	
-	public int getTextLimit() {
-		return textLimit;
-	}
+	public String 			getResource(String path) 	{return Main.class.getResource(path).toExternalForm();}
+	public Stage 			getPrimaryStage() 			{return primaryStage;}
+	public ArrayList<Text> 	getTexts() 					{return texts;}
+	public Deque<String> 	getStack() 					{return stack;}
+	public int 				getTextLimit() 				{return textLimit;}
 }

@@ -9,6 +9,7 @@ public class Text extends TextArea {
 
 	private Main main = null;
 	private ArrayList<Text> texts = null;
+	private String oldText = "";
 
 	public void init(Main main) {
 		this.main = main;
@@ -21,9 +22,10 @@ public class Text extends TextArea {
 		textProperty().addListener(new ChangeListener<String>( ) {
 			@Override
 			public void changed(ObservableValue<? extends String> ov, String oldValue, String newValue) {
-				if(main.getLimited() && getText().length() > main.getTextLimit()) {
-					setText(getText().substring(0, main.getTextLimit()));
-				}
+				if(getText().length() > main.getTextLimit())
+					setText(oldText);
+				else
+					oldText = getText();
 			}
 		});
 		
