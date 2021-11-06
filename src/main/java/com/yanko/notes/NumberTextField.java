@@ -1,3 +1,5 @@
+package com.yanko.notes;
+
 import javafx.scene.control.TextField;
 
 /**

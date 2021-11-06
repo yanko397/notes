@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.LinkedList;
+package com.yanko.notes;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -14,6 +12,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
 
 /**
  * @author Yanko
@@ -73,11 +75,11 @@ public class Main extends Application {
 		face.setPrefHeight(height);
 		
 		scene = new Scene(face, Color.TRANSPARENT);
-		scene.getStylesheets().add(getResource("config.css"));
+		scene.getStylesheets().add("config.css");
 		
 		primaryStage.setTitle("Notes");
 		primaryStage.initStyle(StageStyle.TRANSPARENT);
-		primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("note.png")));
+		primaryStage.getIcons().add(new Image("note.png"));
 		primaryStage.setScene(scene);
 		
 		new RightclickMenu(this);
@@ -267,13 +269,12 @@ public class Main extends Application {
 
 	// ======================== getter and setter ============================ //
 	
-	public String[]					getArgs()					{return startArgs;}
-	public Stage 					getPrimaryStage() 			{return primaryStage;}
-	public Face						getFace()					{return face;}
-	public ArrayList<Text> 			getTexts() 					{return texts;}
-	public ArrayList<DeleteButton>	getDeleteButtons()			{return deleteButtons;}
-	public Deque<String> 			getStack() 					{return stack;}
-	public String 					getResource(String path) 	{return Main.class.getResource(path).toExternalForm();}
-	public int 						getTextLimit() 				{return textLimit;}
-	public void 					setTextLimit(int value)		{textLimit = value;}
+	public String[] getArgs() {return startArgs;}
+	public Stage getPrimaryStage() {return primaryStage;}
+	public Face getFace() {return face;}
+	public ArrayList<Text> getTexts() {return texts;}
+	public ArrayList<DeleteButton> getDeleteButtons() {return deleteButtons;}
+	public Deque<String> getStack() {return stack;}
+	public int getTextLimit() {return textLimit;}
+	public void setTextLimit(int value) {textLimit = value;}
 }

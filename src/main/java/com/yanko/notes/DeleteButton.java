@@ -1,3 +1,5 @@
+package com.yanko.notes;
+
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;

@@ -1,3 +1,5 @@
+package com.yanko.notes;
+
 import java.util.ArrayList;
 
 import javafx.beans.value.ChangeListener;

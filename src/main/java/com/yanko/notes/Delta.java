@@ -1,3 +1,4 @@
+package com.yanko.notes;
 
 /**
  * @author Yanko

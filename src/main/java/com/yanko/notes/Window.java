@@ -1,3 +1,5 @@
+package com.yanko.notes;
+
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;

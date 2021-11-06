@@ -13,7 +13,7 @@
 
 .deleteButtons {
 	-fx-background-color: transparent;
-	-fx-graphic: url('../res/delete.png');
+	-fx-graphic: url('delete.png');
 }
 /*
 .text {

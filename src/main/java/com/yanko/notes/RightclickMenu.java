@@ -1,3 +1,5 @@
+package com.yanko.notes;
+
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 

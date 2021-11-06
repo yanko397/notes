@@ -1,12 +1,14 @@
-import static com.sun.jna.platform.win32.WinUser.GWL_STYLE;
+package com.yanko.notes;
+
+import com.sun.jna.Pointer;
+import com.sun.jna.platform.win32.User32;
+import com.sun.jna.platform.win32.WinDef.HWND;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 
-import com.sun.jna.Pointer;
-import com.sun.jna.platform.win32.User32;
-import com.sun.jna.platform.win32.WinDef.HWND;
+import static com.sun.jna.platform.win32.WinUser.GWL_STYLE;
 
 /**
  * @author Yanko
